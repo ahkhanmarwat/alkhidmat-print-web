@@ -408,6 +408,15 @@ const claimPaper = wireSeg("claim-paper", "A4");
 const claimMode = wireSeg("claim-mode", "color");
 const claimOrientation = wireSeg("claim-orientation", "portrait");
 const claimCopies = wireStepper("claim-copies-minus", "claim-copies-plus", "claim-copies-val");
+// Claim mode (v57 WhatsApp Inbox): "job" = direct print job (original),
+// "inbox" = files land in the shop's Print Suite Inbox, no print options.
+const claimSendMode = wireSeg("claim-send-mode", "job");
+function paintClaimMode() {
+  const inbox = claimSendMode.get() === "inbox";
+  $("claim-options").hidden = inbox;
+  $("claim-send").textContent = inbox ? "Shop Inbox mein bhejo" : "Print job bhejo";
+}
+$("claim-send-mode").addEventListener("click", paintClaimMode);
 let claimGroupId = null;
 
 async function claimCall(body) {
@@ -432,13 +441,14 @@ async function claimCall(body) {
 }
 const CLAIM_ERRORS = {
   not_found: "This shared-file link is not valid. Please share the file again from WhatsApp.",
-  already_claimed: "These shared files were already sent as a print job.",
+  already_claimed: "These shared files were already sent.",
   expired: "This shared file has expired (shares stay valid for 24 hours). Please share it again from WhatsApp.",
   unauthorized: "Please login first, then this shared file will open here.",
 };
 async function loadClaim(groupId) {
   claimGroupId = groupId;
   $("claim-card").hidden = false;
+  paintClaimMode();
   const errEl = $("claim-error");
   errEl.hidden = true;
   try {
@@ -467,7 +477,22 @@ $("claim-send").addEventListener("click", async () => {
   if (block) { errEl.textContent = block; errEl.hidden = false; return; }
   const btn = $("claim-send");
   btn.disabled = true;
+  const inbox = claimSendMode.get() === "inbox";
   try {
+    if (inbox) {
+      await claimCall({
+        action: "claim",
+        mode: "inbox",
+        group_id: claimGroupId,
+        shop_id: claimPicker.selected.id,
+        computer_id: claimPicker.targetComputer().computerId,
+      });
+      sessionStorage.removeItem(PENDING_DROP_KEY);
+      claimGroupId = null;
+      $("claim-card").hidden = true;
+      toast("Files shop ke Inbox mein bhej di gayi hain — operator software mein khol kar print karega.", 6000);
+      return;
+    }
     const out = await claimCall({
       action: "claim",
       group_id: claimGroupId,

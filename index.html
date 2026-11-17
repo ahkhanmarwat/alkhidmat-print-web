@@ -56,7 +56,7 @@
     <!-- ===== Claim card (arrives from a WhatsApp Share) ===== -->
     <section id="claim-card" class="card accent" hidden>
       <h2>Shared file received</h2>
-      <p class="hint">These files were shared with ALKHIDMAT PRINT. Choose the shop and print options, then send.</p>
+      <p class="hint">These files were shared with ALKHIDMAT PRINT. Choose the shop, then either send a print job — or send the files to the shop's Inbox, where the operator opens them in the software and prints with full control.</p>
       <ul id="claim-files" class="file-list"></ul>
       <p id="claim-expires" class="hint"></p>
       <label>Search shop (name or code, e.g. ALK-6169)
@@ -64,6 +64,13 @@
       </label>
       <div id="claim-shop-list" class="shop-list"></div>
       <p id="claim-shop-selected" class="selected-line" hidden></p>
+      <div class="opt-row"><span>Send as</span>
+        <div class="seg" id="claim-send-mode">
+          <button type="button" data-v="job" class="on">Print job bhejo</button>
+          <button type="button" data-v="inbox">Shop Inbox mein bhejo</button>
+        </div>
+      </div>
+      <div id="claim-options">
       <div class="opt-row"><span>Paper</span>
         <div class="seg" id="claim-paper">
           <button type="button" data-v="A4" class="on">A4</button>
@@ -89,8 +96,9 @@
           <button type="button" id="claim-copies-plus">+</button>
         </div>
       </div>
+      </div>
       <p id="claim-error" class="error" hidden></p>
-      <button id="claim-send" type="button" class="primary">Send to shop</button>
+      <button id="claim-send" type="button" class="primary">Print job bhejo</button>
       <button id="claim-dismiss" type="button" class="ghost">Not now</button>
     </section>
 
