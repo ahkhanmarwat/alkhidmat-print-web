@@ -4,7 +4,7 @@
 // so the installed shortcut opens instantly; NEVER intercept cross-origin
 // traffic (Supabase Auth/REST/Storage/Functions) — those always go to the
 // network, and the share-drop POST is outside this scope anyway.
-const CACHE = "alkhidmat-print-v1";
+const CACHE = "alkhidmat-print-v2";
 const SHELL = [
   "./",
   "./index.html",
