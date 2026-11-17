@@ -77,15 +77,44 @@ let computersByShop = null; // Map<shopId, computer[]> | null = status unknown
 let statusKnown = false;
 
 // ------------------------------------------------------- backend (mirror)
+// [shop-search-match:begin] — pure matcher, unit-tested by shop-search.test.mjs
+/** Lowercase + strip everything that is not a-z/0-9, so "ALK-6169",
+ *  "alk 6169" and "alk6169" all normalize to "alk6169". */
+function normalizeSearchText(s) {
+  return String(s ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+/**
+ * Forgiving shop match: the normalized query is a substring of the
+ * normalized shop_code or of the normalized name, OR every word of the
+ * query appears somewhere in the (lowercased) name. An empty query
+ * matches every shop, preserving the list-all behaviour.
+ */
+function shopMatchesQuery(shop, query) {
+  const raw = String(query ?? "").trim().toLowerCase();
+  if (!raw) return true;
+  const nq = normalizeSearchText(raw);
+  if (nq &&
+      (normalizeSearchText(shop?.shop_code).includes(nq) ||
+       normalizeSearchText(shop?.name).includes(nq))) {
+    return true;
+  }
+  const name = String(shop?.name ?? "").toLowerCase();
+  const words = raw.split(/\s+/).filter(Boolean);
+  return words.length > 0 && words.every((w) => name.includes(w));
+}
+// [shop-search-match:end]
+
 async function searchShops(query) {
-  let builder = sb.from("shops")
+  // The shop directory is small: fetch every active shop and filter
+  // client-side with shopMatchesQuery, which tolerates a missing
+  // hyphen/space in the code (alk6169 finds ALK-6169). The old
+  // server-side ilike substring match could not do that.
+  const { data, error } = await sb.from("shops")
     .select("id,name,shop_code,address,phone,active")
-    .eq("active", true);
-  const q = query.trim().replace(/[%(),]/g, "");
-  if (q) builder = builder.or(`name.ilike.%${q}%,shop_code.ilike.%${q}%`);
-  const { data, error } = await builder.order("name");
+    .eq("active", true)
+    .order("name");
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []).filter((s) => shopMatchesQuery(s, query));
 }
 async function fetchComputersByShop() {
   const { data, error } = await sb.rpc("shop_computers_public");
