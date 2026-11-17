@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALKHIDMAT PRINT</title>
+<meta name="theme-color" content="#111C35">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="brandbar">
+  <div class="brand-name">ALKHIDMAT <span>PRINT</span></div>
+  <div class="brand-sub">ALKHIDMAT ONLINE SERVICES</div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ AUTH ============ -->
+  <section id="auth-view" class="card" hidden>
+    <div class="seg seg-wide" id="auth-mode">
+      <button type="button" data-v="login" class="on">Login</button>
+      <button type="button" data-v="signup">Sign up</button>
+    </div>
+    <label id="auth-name-wrap" hidden>Full name
+      <input id="auth-name" type="text" autocomplete="name" placeholder="Your name">
+    </label>
+    <label>Email
+      <input id="auth-email" type="email" autocomplete="email" placeholder="you@example.com">
+    </label>
+    <label>Password
+      <input id="auth-password" type="password" autocomplete="current-password" placeholder="Password">
+    </label>
+    <p id="auth-error" class="error" hidden></p>
+    <button id="auth-submit" type="button" class="primary">Login</button>
+    <p class="hint">New here? Choose “Sign up”, create your account, then pick your print shop.</p>
+  </section>
+
+  <!-- ============ MAIN ============ -->
+  <section id="main-view" hidden>
+    <div class="userbar">
+      <span id="user-email" class="user-email"></span>
+      <button id="btn-logout" type="button" class="ghost">Logout</button>
+    </div>
+
+    <p id="install-hint" class="hint card-soft" hidden>
+      Tip: open the browser menu and choose <b>“Add to Home screen”</b> —
+      then ALKHIDMAT PRINT also appears in WhatsApp’s Share list.
+    </p>
+
+    <!-- ===== Claim card (arrives from a WhatsApp Share) ===== -->
+    <section id="claim-card" class="card accent" hidden>
+      <h2>Shared file received</h2>
+      <p class="hint">These files were shared with ALKHIDMAT PRINT. Choose the shop and print options, then send.</p>
+      <ul id="claim-files" class="file-list"></ul>
+      <p id="claim-expires" class="hint"></p>
+      <label>Search shop (name or code, e.g. ALK-6169)
+        <input id="claim-shop-search" type="search" placeholder="Search shops…">
+      </label>
+      <div id="claim-shop-list" class="shop-list"></div>
+      <p id="claim-shop-selected" class="selected-line" hidden></p>
+      <div class="opt-row"><span>Paper</span>
+        <div class="seg" id="claim-paper">
+          <button type="button" data-v="A4" class="on">A4</button>
+          <button type="button" data-v="A6">A6</button>
+        </div>
+      </div>
+      <div class="opt-row"><span>Mode</span>
+        <div class="seg" id="claim-mode">
+          <button type="button" data-v="color" class="on">Colour</button>
+          <button type="button" data-v="bw">B/W</button>
+        </div>
+      </div>
+      <div class="opt-row"><span>Orientation</span>
+        <div class="seg" id="claim-orientation">
+          <button type="button" data-v="portrait" class="on">Portrait</button>
+          <button type="button" data-v="landscape">Landscape</button>
+        </div>
+      </div>
+      <div class="opt-row"><span>Copies</span>
+        <div class="stepper">
+          <button type="button" id="claim-copies-minus">−</button>
+          <span id="claim-copies-val">1</span>
+          <button type="button" id="claim-copies-plus">+</button>
+        </div>
+      </div>
+      <p id="claim-error" class="error" hidden></p>
+      <button id="claim-send" type="button" class="primary">Send to shop</button>
+      <button id="claim-dismiss" type="button" class="ghost">Not now</button>
+    </section>
+
+    <!-- ===== Tabs ===== -->
+    <div class="seg seg-wide" id="main-tabs">
+      <button type="button" data-v="new" class="on">New Job</button>
+      <button type="button" data-v="jobs">My Jobs</button>
+    </div>
+
+    <!-- ===== New Job ===== -->
+    <section id="panel-new" class="card">
+      <label>Search shop (name or code, e.g. ALK-6169)
+        <input id="shop-search" type="search" placeholder="Search shops…">
+      </label>
+      <div id="shop-list" class="shop-list"></div>
+      <p id="shop-selected" class="selected-line" hidden></p>
+
+      <label class="file-pick">Files to print (photo or PDF, max 25 MB each)
+        <input id="file-input" type="file" multiple
+               accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf">
+      </label>
+      <ul id="file-list" class="file-list"></ul>
+
+      <div class="opt-row"><span>Paper</span>
+        <div class="seg" id="opt-paper">
+          <button type="button" data-v="A4" class="on">A4</button>
+          <button type="button" data-v="A6">A6</button>
+        </div>
+      </div>
+      <div class="opt-row"><span>Mode</span>
+        <div class="seg" id="opt-mode">
+          <button type="button" data-v="color" class="on">Colour</button>
+          <button type="button" data-v="bw">B/W</button>
+        </div>
+      </div>
+      <div class="opt-row"><span>Orientation</span>
+        <div class="seg" id="opt-orientation">
+          <button type="button" data-v="portrait" class="on">Portrait</button>
+          <button type="button" data-v="landscape">Landscape</button>
+        </div>
+      </div>
+      <div class="opt-row"><span>Copies</span>
+        <div class="stepper">
+          <button type="button" id="copies-minus">−</button>
+          <span id="copies-val">1</span>
+          <button type="button" id="copies-plus">+</button>
+        </div>
+      </div>
+      <p id="job-error" class="error" hidden></p>
+      <p id="job-ok" class="ok" hidden></p>
+      <button id="btn-send-job" type="button" class="primary">Send print job</button>
+    </section>
+
+    <!-- ===== My Jobs ===== -->
+    <section id="panel-jobs" class="card" hidden>
+      <div class="row-between">
+        <h2>My Jobs</h2>
+        <button id="btn-refresh-jobs" type="button" class="ghost">Refresh</button>
+      </div>
+      <div id="jobs-list"></div>
+      <p id="jobs-empty" class="hint" hidden>No jobs yet. Send your first print job from the New Job tab.</p>
+    </section>
+  </section>
+
+  <footer class="credit">Designed &amp; Developed by ABDUL HAMEED KHAN · 03459161512 · alkhidmat4pk@gmail.com</footer>
+</main>
+
+<div id="toast" hidden></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
